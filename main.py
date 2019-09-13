@@ -38,7 +38,7 @@ def get_current_watchlist():
 
 # a form for crossing off watched movies
 # (first we build a dropdown from the current watchlist items)
-crossoff_options = ""
+crossoff_options ="" 
 for movie in get_current_watchlist():
     crossoff_options += '<option value="{0}">{0}</option>'.format(movie)
 
@@ -91,15 +91,21 @@ def add_movie():
 
     # TODO 
     # 'escape' the user's input so that if they typed HTML, it doesn't mess up our site
-    
+    content= cgi.escape(new_movie)
     # TODO 
     # if the user typed nothing at all, redirect and tell them the error
+    if (new_movie==""):
+        error = "'{0}' Please specify the name of the movie you want to add".format(new_movie)
+        return redirect("/?error="+error)
 
     # TODO 
     # if the user wants to add a terrible movie, redirect and tell them not to add it b/c it sucks
+    if new_movie in terrible_movies:
+        error = "Trust me, you don't want to add"+cgi.escape(new_movie) +" to your Watchlist.".format(new_movie)
+        return redirect("/?error="+error)
 
     # build response content
-    new_movie_element = "<strong>" + new_movie + "</strong>"
+    new_movie_element = "<strong>" + cgi.escape(new_movie) + "</strong>"
     sentence = new_movie_element + " has been added to your Watchlist!"
     content = page_header + "<p>" + sentence + "</p>" + page_footer
 
@@ -126,6 +132,9 @@ def index():
     content = page_header + main_content + page_footer
 
     return content
+
+    
+
 
 
 app.run()
